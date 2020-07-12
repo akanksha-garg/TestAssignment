@@ -11,7 +11,6 @@ import Foundation
 // MARK: - Country
 struct Blog: Codable {
     let blogId: String
-    let title: String?
     let creationDate: String
     let description: String?
     var commentsCount: Int = 0
@@ -22,7 +21,6 @@ struct Blog: Codable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.blogId = try container.decode(String.self, forKey: .blogId)
-        self.title = try container.decode(String.self, forKey: .title)
         self.creationDate = try container.decode(String.self, forKey: .creationDate)
         self.description = try container.decode(String.self, forKey: .description)
         self.commentsCount = try container.decode(Int.self, forKey: .commentsCount)
@@ -41,7 +39,6 @@ struct Blog: Codable {
         case likesCount = "likes"
         case media = "media"
         case user = "user"
-        case title
     }
     
 }

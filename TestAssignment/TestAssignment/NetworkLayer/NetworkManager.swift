@@ -48,7 +48,7 @@ class NetworkManager {
     
     /// - parameter apiURL: Api url
     /// - parameter onCompletion: Returns flag for api success, response header and response data
-    func callGetAPI<Model: Decodable>(apiURL: String, onCompletion: @escaping(Error?, Model?) -> Void) {
+    func callGetAPI<Model: Decodable>(apiURL: String, onCompletion: @escaping(Error?, [Model]?) -> Void) {
         let config = URLSessionConfiguration.default
         let session = URLSession(configuration: config)
         
@@ -67,12 +67,18 @@ class NetworkManager {
                 return
             }
             
-            // serialise the data / NSData object into Dictionary [String : Any]
-            let utf8Data = String(decoding: content, as: UTF8.self).data(using: .utf8)
-            
+            // Serialization of the data
+            var modelArray: [Model] = []
             do {
-                let modelObject = try JSONDecoder().decode(Model.self, from: utf8Data!)
-                onCompletion(nil, modelObject)
+                if let json = try JSONSerialization.jsonObject(with: content, options: []) as? [[String:Any]] {
+                    for value in json {
+                        let jsonData = try JSONSerialization.data(withJSONObject: value, options: [])
+                        if let modelObject = try? JSONDecoder().decode(Model.self, from: jsonData) {
+                            modelArray.append(modelObject)
+                        }
+                    }
+                }
+                onCompletion(nil, modelArray)
             } catch {
                 onCompletion(error, nil)
             }

@@ -10,8 +10,15 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    // MARK: - Variables
+       var blogsTableView: UITableView!
+       let blogVM = BlogViewModel()
+       private let control: UIRefreshControl = UIRefreshControl()
+       let estimatedRowHeight = 400.00
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        blogVM.loadData()
         // Do any additional setup after loading the view.
     }
 
