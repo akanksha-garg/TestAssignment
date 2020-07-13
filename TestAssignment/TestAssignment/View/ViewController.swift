@@ -19,7 +19,6 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         blogsTableView.register(UINib.init(nibName: BlogArticleTableViewCell.identifier, bundle: nil), forCellReuseIdentifier: BlogArticleTableViewCell.identifier)
-        blogVM.loadData()
         blogVM.needsRefresh = { [weak self] in
             DispatchQueue.main.async {
                 if let control = self?.blogsTableView.refreshControl, control.isRefreshing {
@@ -28,6 +27,7 @@ class ViewController: UIViewController {
                 self?.blogsTableView.reloadData()
             }
         }
+        blogVM.loadData(isPullToRefresh: false)
         control.addTarget(self, action: #selector(reloadData), for: .valueChanged)
         blogsTableView.refreshControl = control
         self.blogsTableView.estimatedRowHeight = CGFloat(estimatedRowHeight)
@@ -35,7 +35,7 @@ class ViewController: UIViewController {
     
     // MARK: - Pull to refresh Function
     @objc private func reloadData() {
-        blogVM.loadData()
+        blogVM.loadData(isPullToRefresh: true)
     }
     
 }
