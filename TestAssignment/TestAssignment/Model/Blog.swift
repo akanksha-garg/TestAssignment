@@ -47,10 +47,14 @@ struct Blog: Codable {
 struct Media: Codable {
     let mediaId: String!
     let imageHref: String?
+    let title: String?
+    let blogUrl: String?
     
     enum CodingKeys: String, CodingKey {
         case mediaId = "id"
         case imageHref = "image"
+        case title
+        case blogUrl = "url"
     }
     
 }
@@ -59,7 +63,7 @@ struct Media: Codable {
 struct User: Codable {
     let userID: String!
     let firstName: String
-    let lastName: String?
+    let lastName: String
     let avatarHref: String?
     let designation: String?
     
@@ -69,6 +73,9 @@ struct User: Codable {
         case userID = "id"
         case avatarHref = "avatar"
         case designation
+    }
+    var fullName: String {
+        return firstName + " " + lastName
     }
     
 }

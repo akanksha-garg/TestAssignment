@@ -9,19 +9,33 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    
+    @IBOutlet weak var blogsTableView: UITableView!
     // MARK: - Variables
-       var blogsTableView: UITableView!
-       let blogVM = BlogViewModel()
-       private let control: UIRefreshControl = UIRefreshControl()
-       let estimatedRowHeight = 400.00
+    let blogVM = BlogViewModel()
+    private let control: UIRefreshControl = UIRefreshControl()
+    let estimatedRowHeight = 450.00
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        blogsTableView.register(UINib.init(nibName: BlogArticleTableViewCell.identifier, bundle: nil), forCellReuseIdentifier: BlogArticleTableViewCell.identifier)
         blogVM.loadData()
-        // Do any additional setup after loading the view.
+        blogVM.needsRefresh = { [weak self] in
+            DispatchQueue.main.async {
+                if let control = self?.blogsTableView.refreshControl, control.isRefreshing {
+                    control.endRefreshing()
+                }
+                self?.blogsTableView.reloadData()
+            }
+        }
+        control.addTarget(self, action: #selector(reloadData), for: .valueChanged)
+        blogsTableView.refreshControl = control
+        self.blogsTableView.estimatedRowHeight = CGFloat(estimatedRowHeight)
     }
-
-
+    
+    // MARK: - Pull to refresh Function
+    @objc private func reloadData() {
+        blogVM.loadData()
+    }
+    
 }
-

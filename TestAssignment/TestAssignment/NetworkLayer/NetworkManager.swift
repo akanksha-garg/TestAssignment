@@ -48,12 +48,21 @@ class NetworkManager {
     
     /// - parameter apiURL: Api url
     /// - parameter onCompletion: Returns flag for api success, response header and response data
-    func callGetAPI<Model: Decodable>(apiURL: String, onCompletion: @escaping(Error?, [Model]?) -> Void) {
+    func callGetAPI<Model: Decodable>(apiURL: String, requestData: [String: String]?, onCompletion: @escaping(Error?, [Model]?) -> Void) {
         let config = URLSessionConfiguration.default
         let session = URLSession(configuration: config)
         
-        let url = URL(string: API.kBaseURL+apiURL)!
-        let task = session.dataTask(with: url) { data, _, error in
+        //Adding Query Params to URL
+        let urlComponents = NSURLComponents(string: API.kBaseURL+apiURL)!
+        urlComponents.queryItems = [URLQueryItem]()
+        if let paramData = requestData {
+            for (key, value) in paramData {
+                let queryItem = URLQueryItem(name: key, value: value)
+                urlComponents.queryItems?.append(queryItem)
+            }
+        }
+        
+        let task = session.dataTask(with: urlComponents.url!) { data, _, error in
             
             // ensure there is no error for this HTTP response
             guard error == nil else {
