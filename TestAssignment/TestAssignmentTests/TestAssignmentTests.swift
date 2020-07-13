@@ -10,25 +10,36 @@ import XCTest
 @testable import TestAssignment
 
 class TestAssignmentTests: XCTestCase {
-
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    
+    let viewModel = BlogViewModel()
+    
+    override func setUp() {
+        viewModel.getJsonStaticFeeds()
     }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    
+    func testVM() {
+        
+        XCTAssertEqual(viewModel.blogCount, 10)
+        
+        XCTAssertEqual(viewModel.blogData(0)?.commentsCount, 8237)
+        XCTAssertEqual(viewModel.blogData(1)?.likesCount, 71738)
+        
+        
+        let media = viewModel.blogData(1)?.media?[0]
+        XCTAssertEqual(media?.blogUrl , "https://alexandro.name")
+        
+        let user = viewModel.blogData(1)?.user?[0]
+        XCTAssertEqual(user?.designation , "Central Intranet Developer")
+        XCTAssertNotEqual(viewModel.blogData(9)?.likesCount, 97000)
     }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    
+    func testBlogTimeStamp() {
+        let value = viewModel.blogTimeStamp(0)
+        XCTAssertEqual(value, "87 days")
     }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
+    
+    func testBlogData() {
+        let value = viewModel.blogData(0)
+        XCTAssertEqual(value?.commentsCount, 8237)
     }
-
 }
