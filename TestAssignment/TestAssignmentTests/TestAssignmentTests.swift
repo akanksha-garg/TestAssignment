@@ -17,9 +17,9 @@ class TestAssignmentTests: XCTestCase {
         viewModel.getJsonStaticFeeds()
     }
     
-    func testVM() {
+    func testVM() throws {
         
-        XCTAssertEqual(viewModel.blogCount, 10)
+        XCTAssertTrue(viewModel.blogCount == 10)
         
         XCTAssertEqual(viewModel.blogData(0)?.commentsCount, 8237)
         XCTAssertEqual(viewModel.blogData(1)?.likesCount, 71738)
@@ -31,6 +31,9 @@ class TestAssignmentTests: XCTestCase {
         let user = viewModel.blogData(1)?.user?[0]
         XCTAssertEqual(user?.designation , "Central Intranet Developer")
         XCTAssertNotEqual(viewModel.blogData(9)?.likesCount, 97000)
+        
+        let firstName =  try XCTUnwrap(user?.firstName)
+        XCTAssertFalse(firstName.isEmpty)
     }
     
     func testBlogTimeStamp() {
